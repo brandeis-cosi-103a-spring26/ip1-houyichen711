@@ -1,75 +1,94 @@
 package edu.brandeis.cosi103a.ip1;
 
-import java.util.Random;
 import java.util.Scanner;
+import java.util.Random;
 
 /**
- * Simple two-player dice rolling game.
+ * Dice Rolling Game
+ *
  */
-public class App {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        Random rnd = new Random();
+public class App 
+{
+    public static void main( String[] args )
+    {
+        Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
 
-        final int TURNS_PER_PLAYER = 10;
-        final int MAX_REROLLS = 2;
-        int[] scores = new int[2];
+        System.out.println("Welcome to the Dice Rolling Game!");
+        
+        String[] players = getPlayerNames(scanner);
+        int[] scores = {0, 0};
 
-        System.out.println("Two-player Dice Game");
-        System.out.println("Each player gets " + TURNS_PER_PLAYER + " turns.");
-        System.out.println("On each turn you roll one 6-sided die and may reroll up to " + MAX_REROLLS + " times.");
-        System.out.println("Enter 'r' to reroll or 'h' to hold when prompted. Press Enter after your choice.");
-        System.out.println();
+        playGame(scanner, random, players, scores);
 
-        for (int turn = 1; turn <= TURNS_PER_PLAYER; turn++) {
-            for (int player = 0; player < 2; player++) {
-                System.out.println("--- Turn " + turn + " for Player " + (player + 1) + " ---");
+        displayFinalResults(players, scores);
 
-                int roll = rnd.nextInt(6) + 1;
-                int rerolls = 0;
+        scanner.close();
+    }
 
-                while (true) {
-                    System.out.println("Player " + (player + 1) + " rolled: " + roll);
-                    if (rerolls >= MAX_REROLLS) {
-                        System.out.println("No rerolls left.");
-                        break;
-                    }
+    private static String[] getPlayerNames(Scanner scanner) {
+        String[] players = new String[2];
+        System.out.print("Enter name for Player 1: ");
+        players[0] = scanner.nextLine();
+        System.out.print("Enter name for Player 2: ");
+        players[1] = scanner.nextLine();
+        return players;
+    }
 
-                    System.out.print("Enter 'r' to reroll (" + (MAX_REROLLS - rerolls) + " left) or 'h' to hold: ");
-                    String line = sc.nextLine();
-                    if (line == null) {
-                        break;
-                    }
-                    line = line.trim().toLowerCase();
-                    if (line.equals("r")) {
-                        rerolls++;
-                        roll = rnd.nextInt(6) + 1;
-                        continue;
-                    } else if (line.equals("h") || line.isEmpty()) {
-                        break;
-                    } else {
-                        System.out.println("Unrecognized input. Treating as hold.");
-                        break;
-                    }
-                }
-
-                scores[player] += roll;
-                System.out.println("Player " + (player + 1) + " ends turn with " + roll + " (total: " + scores[player] + ")");
-                System.out.println();
+    private static void playGame(Scanner scanner, Random random, String[] players, int[] scores) {
+        for (int turn = 1; turn <= 10; turn++) {
+            System.out.println("\n--- Turn " + turn + " ---");
+            for (int i = 0; i < 2; i++) {
+                scores[i] += playTurn(scanner, random, players[i]);
+                System.out.println(players[i] + "'s total score: " + scores[i]);
             }
         }
+    }
 
-        System.out.println("=== Final Scores ===");
-        System.out.println("Player 1: " + scores[0]);
-        System.out.println("Player 2: " + scores[1]);
+    private static int playTurn(Scanner scanner, Random random, String playerName) {
+        System.out.println(playerName + "'s turn:");
+        int die = rollDie(random);
+        System.out.println("Rolled: " + die);
+        die = handleReRolls(scanner, random, die, playerName);
+        return die;
+    }
+
+    private static void displayFinalResults(String[] players, int[] scores) {
+        System.out.println("\n--- Final Scores ---");
+        System.out.println(players[0] + ": " + scores[0]);
+        System.out.println(players[1] + ": " + scores[1]);
+
+        String winner = determineWinner(players, scores);
+        System.out.println(winner);
+    }
+
+    private static String determineWinner(String[] players, int[] scores) {
         if (scores[0] > scores[1]) {
-            System.out.println("Player 1 wins!");
+            return players[0] + " wins!";
         } else if (scores[1] > scores[0]) {
-            System.out.println("Player 2 wins!");
+            return players[1] + " wins!";
         } else {
-            System.out.println("It's a tie!");
+            return "It's a tie!";
         }
+    }
 
-        sc.close();
+    public static int rollDie(Random random) {
+        return random.nextInt(6) + 1;
+    }
+
+    private static int handleReRolls(Scanner scanner, Random random, int currentDie, String playerName) {
+        int reRolls = 0;
+        while (reRolls < 2) {
+            System.out.print("Do you want to re-roll? (y/n): ");
+            String choice = scanner.nextLine().trim().toLowerCase();
+            if (choice.equals("y") || choice.equals("yes")) {
+                currentDie = rollDie(random);
+                System.out.println("Re-rolled: " + currentDie);
+                reRolls++;
+            } else {
+                break;
+            }
+        }
+        return currentDie;
     }
 }

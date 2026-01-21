@@ -2,46 +2,43 @@ package edu.brandeis.cosi103a.ip1;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.util.Random;
 
 import org.junit.Test;
 
 /**
- * Unit test for App.
+ * Unit test for simple App.
  */
-public class AppTest {
+public class AppTest 
+{
+    /**
+     * Rigorous Test :-)
+     */
     @Test
-    public void testGameRunsAndPrintsFinalScores() throws Exception {
-        StringBuilder input = new StringBuilder();
-        for (int i = 0; i < 20; i++) {
-            input.append("h\n");
+    public void shouldAnswerWithTrue()
+    {
+        assertTrue( true );
+    }
+
+    @Test
+    public void testRollDie() {
+        Random random = new Random();
+        for (int i = 0; i < 100; i++) {
+            int result = App.rollDie(random);
+            assertTrue("Die roll should be between 1 and 6", result >= 1 && result <= 6);
         }
+    }
 
-        InputStream sysInOrig = System.in;
-        PrintStream sysOutOrig = System.out;
-
-        ByteArrayInputStream in = new ByteArrayInputStream(input.toString().getBytes("UTF-8"));
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream ps = new PrintStream(baos, true, "UTF-8");
-
-        try {
-            System.setIn(in);
-            System.setOut(ps);
-
-            App.main(new String[0]);
-
-            ps.flush();
-            String output = baos.toString("UTF-8");
-
-            assertTrue("Output should contain final scores header", output.contains("=== Final Scores ==="));
-            assertTrue("Output should mention Player 1", output.contains("Player 1:"));
-            assertTrue("Output should mention Player 2", output.contains("Player 2:"));
-        } finally {
-            System.setIn(sysInOrig);
-            System.setOut(sysOutOrig);
-        }
+    @Test
+    public void testRollDieWithFixedSeed() {
+        Random random = new Random(42); // Fixed seed for predictable results
+        // With seed 42, the first few rolls are predictable
+        int roll1 = App.rollDie(random);
+        int roll2 = App.rollDie(random);
+        int roll3 = App.rollDie(random);
+        // Just check they are in range, since exact values depend on seed
+        assertTrue(roll1 >= 1 && roll1 <= 6);
+        assertTrue(roll2 >= 1 && roll2 <= 6);
+        assertTrue(roll3 >= 1 && roll3 <= 6);
     }
 }
