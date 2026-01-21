@@ -1,0 +1,24 @@
+{
+    "java.project.sourcePaths": [
+        ".devcontainer/ip1/src/main/java",
+        ".devcontainer/ip1/src/test/java"
+    ],
+    "java.project.outputPath": ".devcontainer/ip1/target/classes",
+    "java.project.referencedLibraries": [
+        ".devcontainer/ip1/target/classes",
+        "/workspaces/ip1-houyichen711/junit-4.11.jar",
+        "/workspaces/ip1-houyichen711/hamcrest-core-1.3.jar"
+    ],
+    "java.test.config": {
+        "workingDirectory": ".devcontainer/ip1",
+        "classPaths": [
+            ".devcontainer/ip1/target/classes",
+            ".devcontainer/ip1/target/test-classes",
+            "/workspaces/ip1-houyichen711/junit-4.11.jar",
+            "/workspaces/ip1-houyichen711/hamcrest-core-1.3.jar"
+        ]
+    },
+    "java.import.gradle.enabled": false,
+    "java.import.maven.enabled": true,
+    "java.configuration.updateBuildConfiguration": "automatic"
+}
